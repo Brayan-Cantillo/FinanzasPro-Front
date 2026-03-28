@@ -6,7 +6,7 @@ import axios from 'axios';
  * Base URL apunta al servidor local en el puerto 3000.
  */
 const api = axios.create({
-  baseURL: 'http://localhost:3000', // URL base del servidor backend
+  baseURL: 'https://finanzaspro-ci2u.onrender.com', // URL base del servidor backend
 });
 
 /**
