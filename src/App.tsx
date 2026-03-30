@@ -13,6 +13,7 @@ import Dashboard from './pages/Dashboard';           // Panel principal con mét
 import Transactions from './pages/Transactions';     // Gestión de transacciones (ingresos/gastos)
 import CreditSimulator from './pages/CreditSimulator'; // Simulador de créditos
 import Profile from './pages/Profile';               // Perfil del usuario
+import ResetPassword from './pages/ResetPassword';   // Restablecimiento de contraseña
 
 /**
  * Componente raíz de la aplicación.
@@ -26,6 +27,7 @@ function App() {
         {/* Rutas públicas: accesibles sin autenticación */}
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Rutas protegidas: requieren autenticación para acceder */}
         {/* PrivateRoute verifica si el usuario está logueado */}
