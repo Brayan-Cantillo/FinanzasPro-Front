@@ -19,6 +19,18 @@ export interface AuthResponse {
   user: { id: number; name: string; email: string }; // Datos básicos del usuario
 }
 
+// Estructura de datos para restablecer contraseña (sin autenticación)
+export interface ResetPasswordPayload {
+  email: string;       // Correo electrónico del usuario
+  newPassword: string; // Nueva contraseña
+}
+
+// Estructura de datos para cambiar contraseña (autenticado)
+export interface ChangePasswordPayload {
+  currentPassword: string; // Contraseña actual del usuario
+  newPassword: string;     // Nueva contraseña
+}
+
 /**
  * Servicio de autenticación.
  * Contiene las funciones para comunicarse con los endpoints de login y registro del backend.
@@ -28,4 +40,8 @@ export const authService = {
   login: (data: LoginPayload) => api.post<AuthResponse>('/auth/login', data),
   // Envía datos del nuevo usuario al servidor para crear la cuenta y recibe un token JWT
   register: (data: RegisterPayload) => api.post<AuthResponse>('/auth/register', data),
+  // Restablece la contraseña usando solo el email (sin autenticación)
+  resetPassword: (data: ResetPasswordPayload) => api.post('/auth/reset-password', data),
+  // Cambia la contraseña del usuario autenticado (requiere token)
+  changePassword: (data: ChangePasswordPayload) => api.patch('/auth/change-password', data),
 };
