@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { userService } from '../../../services/userService';       // Servicio de usuario (perfil)
 import { metricsService } from '../../../services/metricsService'; // Servicio de métricas financieras
+import { authService } from '../../../services/authService';       // Servicio de autenticación
 import { useAuth } from '../../../context/AuthContext';            // Contexto de autenticación
 import type { UserProfile } from '../../../services/userService';
 import type { MetricsSummary } from '../../../services/metricsService';
@@ -25,6 +26,12 @@ export const useProfile = () => {
   const [saving, setSaving] = useState(false);                           // Indica si se está guardando
   const [saveMsg, setSaveMsg] = useState('');                            // Mensaje de éxito o error al guardar
   const [form, setForm] = useState<ProfileForm>({ name: '', email: '', salary: 0 }); // Estado del formulario
+
+  // Estados para cambio de contraseña
+  const [changingPassword, setChangingPassword] = useState(false);     // Sección de cambio de contraseña visible
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [savingPassword, setSavingPassword] = useState(false);         // Indica si se está guardando la contraseña
+  const [passwordMsg, setPasswordMsg] = useState('');                   // Mensaje de éxito o error al cambiar contraseña
 
   /**
    * Carga el perfil del usuario y las métricas financieras en paralelo.
@@ -95,6 +102,44 @@ export const useProfile = () => {
   };
 
   /**
+   * Cambia la contraseña del usuario autenticado.
+   * Verifica que la contraseña actual sea correcta y que la nueva contraseña sea válida.
+   */
+  const handleChangePassword = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+      setPasswordMsg('Por favor completa todos los campos');
+      return;
+    }
+    if (passwordForm.newPassword.length < 6) {
+      setPasswordMsg('La nueva contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordMsg('Las contraseñas no coinciden');
+      return;
+    }
+
+    setSavingPassword(true);
+    setPasswordMsg('');
+    try {
+      await authService.changePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      });
+      setPasswordMsg('Contraseña cambiada correctamente');
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setChangingPassword(false);
+      setTimeout(() => setPasswordMsg(''), 3000);
+    } catch (err: any) {
+      setPasswordMsg(err.response?.data?.message || 'Error al cambiar la contraseña');
+    } finally {
+      setSavingPassword(false);
+    }
+  };
+
+  /**
    * Cancela la edición y restaura los valores originales del formulario.
    */
   const handleCancelEdit = () => {
@@ -132,5 +177,14 @@ export const useProfile = () => {
     balance,
     savingsRate,
     expenseToSalaryRatio,
+    // Cambio de contraseña
+    changingPassword,
+    setChangingPassword,
+    passwordForm,
+    setPasswordForm,
+    savingPassword,
+    passwordMsg,
+    handleChangePassword,
   };
 };
+
