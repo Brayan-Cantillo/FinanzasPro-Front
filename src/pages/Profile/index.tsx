@@ -33,6 +33,14 @@ export default function Profile() {
     balance,               // Balance (ingresos - gastos)
     savingsRate,           // Tasa de ahorro (%)
     expenseToSalaryRatio,  // Ratio gastos/salario (%)
+    // Cambio de contraseña
+    changingPassword,
+    setChangingPassword,
+    passwordForm,
+    setPasswordForm,
+    savingPassword,
+    passwordMsg,
+    handleChangePassword,
   } = useProfile();
 
   // Muestra spinner mientras se cargan los datos
@@ -150,6 +158,81 @@ export default function Profile() {
               <p className="text-gray-900 font-semibold">{salary > 0 ? formatCurrency(salary) : 'No registrado'}</p>
             </div>
           </div>
+        )}
+      </div>
+
+      {/* Tarjeta de Cambiar Contraseña */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">Seguridad</h2>
+          {!changingPassword && (
+            <button
+              onClick={() => setChangingPassword(true)}
+              className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition cursor-pointer"
+            >
+              Cambiar contraseña
+            </button>
+          )}
+        </div>
+
+        {passwordMsg && (
+          <div className={`rounded-lg px-4 py-3 text-sm mb-4 ${passwordMsg.includes('Error') || passwordMsg.includes('completa') || passwordMsg.includes('coinciden') || passwordMsg.includes('caracteres') ? 'bg-red-50 border border-red-200 text-red-700' : 'bg-green-50 border border-green-200 text-green-700'}`}>
+            {passwordMsg}
+          </div>
+        )}
+
+        {changingPassword && (
+          <form onSubmit={handleChangePassword} className="border-t border-gray-200 pt-6 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña actual</label>
+              <input
+                type="password"
+                value={passwordForm.currentPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                placeholder="••••••••"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nueva contraseña</label>
+              <input
+                type="password"
+                value={passwordForm.newPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                placeholder="••••••••"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar nueva contraseña</label>
+              <input
+                type="password"
+                value={passwordForm.confirmPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                placeholder="••••••••"
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                type="submit"
+                disabled={savingPassword}
+                className="bg-indigo-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition disabled:opacity-50 cursor-pointer"
+              >
+                {savingPassword ? 'Guardando...' : 'Cambiar contraseña'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setChangingPassword(false);
+                  setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                }}
+                className="bg-gray-200 text-gray-700 px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-300 transition cursor-pointer"
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
         )}
       </div>
 
