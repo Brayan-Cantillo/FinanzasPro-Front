@@ -63,8 +63,15 @@ export default function Login() {
           </button>
         </form>
 
+        {/* Enlace para restablecer contraseña */}
+        <p className="text-center text-sm text-gray-500 mt-4">
+          <Link to="/reset-password" className="text-indigo-600 hover:text-indigo-800 font-medium">
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </p>
+
         {/* Enlace para ir a la página de registro si no tiene cuenta */}
-        <p className="text-center text-sm text-gray-500 mt-6">
+        <p className="text-center text-sm text-gray-500 mt-2">
           ¿No tienes cuenta?{' '}
           <Link to="/register" className="text-indigo-600 hover:text-indigo-800 font-medium">
             Regístrate
@@ -74,3 +81,4 @@ export default function Login() {
     </div>
   );
 }
+
